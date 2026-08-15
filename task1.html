@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DramaLand</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #141414;
+            min-height: 100vh;
+            padding-top: 80px;
+            position: relative;
+            overflow-x: hidden;
+            color: #ffffff;
+        }
+
+
+
+        /* Fixed Navigation */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: rgba(20, 20, 20, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            padding: 0 2rem;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #e50914;
+            text-decoration: none;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-item {
+            position: relative;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: 500;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover {
+            color: #b3b3b3;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-link.active {
+            color: #ffffff;
+            background: rgba(229, 9, 20, 0.8);
+        }
+
+        /* Page Content */
+        .page {
+            display: none;
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+
+        .page.active {
+            display: block;
+        }
+
+        .page-title {
+            color: white;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Hero Banner Styles */
+        .hero-banner {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            margin-bottom: 3rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, rgba(229, 9, 20, 0.1), rgba(0, 0, 0, 0.3));
+            border-radius: 12px;
+            min-height: 400px;
+        }
+
+        .hero-content {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .hero-title {
+            font-size: 3rem;
+            font-weight: bold;
+            color: #ffffff;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .hero-description {
+            font-size: 1.2rem;
+            color: #b3b3b3;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .play-btn {
+            background: #ffffff;
+            color: #000000;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .play-btn:hover {
+            background: #e6e6e6;
+            transform: scale(1.05);
+        }
+
+        .info-btn {
+            background: rgba(109, 109, 110, 0.7);
+            color: #ffffff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 6px;
+            font-size: 1.1rem;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .info-btn:hover {
+            background: rgba(109, 109, 110, 0.9);
+            transform: scale(1.05);
+        }
+
+        .hero-image {
+            flex: 1;
+            max-width: 600px;
+        }
+
+        .hero-image img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            border-radius: 8px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .section-title {
+            color: #ffffff;
+            font-size: 1.8rem;
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Home Page Styles */
+        .series-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .series-card {
+            background: #2f2f2f;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .series-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+        }
+
+        .series-card:hover .play-overlay {
+            opacity: 1;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: pointer;
+        }
+
+        .play-overlay .play-icon {
+            font-size: 3rem;
+            color: #ffffff;
+        }
+
+        .card-content {
+            padding: 1.5rem;
+        }
+
+        .series-title {
+            font-size: 1.3rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .series-genre {
+            color: #b3b3b3;
+            font-weight: 500;
+            margin-bottom: 1rem;
+        }
+
+        .series-description {
+            color: #b3b3b3;
+            line-height: 1.6;
+        }
+
+        .series-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 0;
+            margin-bottom: 0;
+        }
+
+        /* Search Page Styles */
+        .search-container {
+            background: #2f2f2f;
+            border-radius: 8px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .search-box {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #404040;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            margin-bottom: 1.5rem;
+            transition: border-color 0.3s ease;
+            background: #141414;
+            color: #ffffff;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #e50914;
+        }
+
+        .categories {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .category-btn {
+            padding: 0.7rem 1.5rem;
+            background: #404040;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #ffffff;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: #e50914;
+            color: white;
+        }
+
+        /* Profile Page Styles */
+        .profile-container {
+            background: #2f2f2f;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            background: #e50914;
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: white;
+        }
+
+        .profile-name {
+            font-size: 1.8rem;
+            color: #ffffff;
+            margin-bottom: 0.5rem;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #e50914;
+        }
+
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+        }
+
+        /* Download Page Styles */
+        .download-list {
+            background: #2f2f2f;
+            border-radius: 8px;
+            padding: 2rem;
+        }
+
+        .download-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #404040;
+        }
+
+        .download-item:last-child {
+            border-bottom: none;
+        }
+
+        .download-btn {
+            padding: 0.7rem 1.5rem;
+            background: #e50914;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+
+        .download-btn:hover {
+            background: #f40612;
+            transform: scale(1.05);
+        }
+
+        /* Progress Bar Styles */
+        .progress-container {
+            background: #404040;
+            border-radius: 4px;
+            padding: 0.3rem;
+            margin-top: 1rem;
+        }
+
+        .progress-bar {
+            background: #e50914;
+            height: 6px;
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #b3b3b3;
+            margin-top: 0.5rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-link {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.9rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .series-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .profile-stats {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .hero-banner {
+                flex-direction: column;
+                text-align: center;
+                min-height: auto;
+            }
+
+            .hero-title {
+                font-size: 2rem;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .hero-image {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo">🎭 DramaLand</a>
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="nav-link active" data-page="home">Home</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="search">Search</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="download">Downloads</a>
+                </li>
+                <li class="nav-item">
+                    <a href="#" class="nav-link" data-page="profile">Profile</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Home Page -->
+    <div class="page active" id="home">
+        <!-- Hero Banner -->
+        <div class="hero-banner">
+            <div class="hero-content">
+                <h1 class="hero-title">Crash Landing on You</h1>
+                <p class="hero-description">A paragliding mishap drops a South Korean heiress in North Korea -- and into the life of an army officer, who decides he will help her hide.</p>
+                <div class="hero-buttons">
+                    <button class="play-btn">▶ Play</button>
+                    <button class="info-btn">ℹ More Info</button>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS0t1Qx7Q-Xh1V8e66EiUIXHouHFcWWKeHmH1dzNAHlMDdUsvSnqF5pk63npzUtezewD7DS0w" alt="Crash Landing on You">
+            </div>
+        </div>
+        
+        <h2 class="section-title">Continue Watching</h2>
+        <div class="series-grid" style="margin-bottom: 3rem;">
+            <div class="series-card">
+                <img src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcS0t1Qx7Q-Xh1V8e66EiUIXHouHFcWWKeHmH1dzNAHlMDdUsvSnqF5pk63npzUtezewD7DS0w" alt="Crash Landing on You" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">Crash Landing on You</h3>
+                    <p class="series-genre">Romance • Comedy • Drama</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 65%;"></div>
+                        <p class="progress-text">Episode 13 of 20</p>
+                    </div>
+                </div>
+            </div>
+            <div class="series-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRqMORbiBUPIhNGJ_EArA6gZeqqZJbir2rR-Q&s" alt="Squid Game" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">Squid Game</h3>
+                    <p class="series-genre">Thriller • Drama • Mystery</p>
+                    <div class="progress-container">
+                        <div class="progress-bar" style="width: 33%;"></div>
+                        <p class="progress-text">Episode 3 of 9</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <h2 class="section-title">Popular K-Dramas</h2>
+        <div class="series-grid">
+            <div class="series-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTAxDyFVzutILuapbimdDyrQQYqMhHP4LX223XMhU5ITNhzskbWeeEcnH-AP1mVqRe09kM&usqp=CAU" alt="Goblin" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">Goblin (Guardian)</h3>
+                    <p class="series-genre">Fantasy • Romance • Drama</p>
+                </div>
+            </div>
+            <div class="series-card">
+                <img src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRWe6UZLFRstWcQQbHRFktvxMwro2s1AP_tgvWA1oe3qvndP0tGJnceLCNkUBA3fMIcIqeJag" alt="Descendants of the Sun" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">Descendants of the Sun</h3>
+                    <p class="series-genre">Romance • Action • Medical</p>
+                </div>
+            </div>
+            <div class="series-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRtBvfCvR7Gn3U5M4xZooEi3j-tgVhYCz25tq8AQd0DYd-3lznoxV__iZaeMBfiTurtoTQ&usqp=CAU" alt="Hotel Del Luna" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">Hotel Del Luna</h3>
+                    <p class="series-genre">Fantasy • Horror • Romance</p>
+                </div>
+            </div>
+            <div class="series-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcST4MXpm2mTo-o8Qvbf-KO6RtVs2NmFn8WNUqX9bcXfBkuewEdV2jukiPF7KWjDZDeD3BZoaQ" alt="It's Okay to Not Be Okay" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">It's Okay to Not Be Okay</h3>
+                    <p class="series-genre">Romance • Drama • Psychological</p>
+                </div>
+            </div>
+            <div class="series-card">
+                <img src="https://occ-0-8407-2219.1.nflxso.net/dnm/api/v6/Z-WHgqd_TeJxSuha8aZ5WpyLcX8/AAAABbILmPoJiIrw5J7TcIQwSDi9U86qlWac25U4bw9tJ5iVCTFD0kVP1Lq4PmR9TdPVnnvrJSHEKHpQdN-XaaiGd91yErT3-OSbW6xe.jpg?r=cb6" alt="True Beauty" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">True Beauty</h3>
+                    <p class="series-genre">Romance • Comedy • School</p>
+                </div>
+            </div>
+            <div class="series-card">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQkSoA_InE82-3EY4PZI0N8smNFB7hHdlCElw&s" alt="Start-Up" class="series-image">
+                <div class="play-overlay">
+                    <div class="play-icon">▶</div>
+                </div>
+                <div class="card-content">
+                    <h3 class="series-title">Start-Up</h3>
+                    <p class="series-genre">Romance • Business • Drama</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search Page -->
+    <div class="page" id="search">
+        <h1 class="page-title">Search & Browse</h1>
+        <div class="search-container">
+            <input type="text" class="search-box" placeholder="Search for K-dramas, actors, or genres...">
+            <h3 style="margin-bottom: 1rem; color: #ffffff;">Browse by Categories</h3>
+            <div class="categories">
+                <button class="category-btn active">All</button>
+                <button class="category-btn">Romance</button>
+                <button class="category-btn">Drama</button>
+                <button class="category-btn">Comedy</button>
+                <button class="category-btn">Thriller</button>
+                <button class="category-btn">Fantasy</button>
+                <button class="category-btn">Historical</button>
+                <button class="category-btn">Medical</button>
+                <button class="category-btn">School</button>
+                <button class="category-btn">Crime</button>
+                <button class="category-btn">Action</button>
+                <button class="category-btn">Mystery</button>
+            </div>
+        </div>
+        <div class="series-grid" id="search-
